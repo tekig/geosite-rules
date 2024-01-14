@@ -24,7 +24,7 @@ func NewHTTP(listen string, repo *repository.DLC) (*HTTP, error) {
 		listen: listen,
 	}
 
-	h.e.GET("/rule/*", h.handler)
+	h.e.GET("/rule/geosite/*", h.handler)
 
 	return h, nil
 }
