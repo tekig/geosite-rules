@@ -13,11 +13,11 @@ import (
 
 type HTTP struct {
 	e      *echo.Echo
-	repo   *repository.DLC
+	repo   repository.Repository
 	listen string
 }
 
-func NewHTTP(listen string, repo *repository.DLC) (*HTTP, error) {
+func NewHTTP(listen string, repo repository.Repository) (*HTTP, error) {
 	h := &HTTP{
 		e:      echo.New(),
 		repo:   repo,
@@ -39,12 +39,7 @@ func (h *HTTP) handler(c echo.Context) error {
 		return fmt.Errorf("rules: %w", err)
 	}
 
-	list, err := repository.PlainText(rules)
-	if err != nil {
-		return fmt.Errorf("plain text: %w", err)
-	}
-
-	return c.Blob(http.StatusOK, echo.MIMETextPlainCharsetUTF8, []byte(list))
+	return c.Blob(http.StatusOK, echo.MIMETextPlainCharsetUTF8, []byte(rules))
 }
 
 func (h *HTTP) Run(ctx context.Context) error {

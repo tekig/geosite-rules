@@ -14,12 +14,23 @@ type App struct {
 }
 
 func New() (*App, error) {
-	r, err := repository.NewDLC(env("DLC_PATH", "dlc.dat"))
+	repoDLC, err := repository.NewDLC(env("DLC_PATH", "dlc.dat"))
 	if err != nil {
 		return nil, fmt.Errorf("dlc: %w", err)
 	}
 
-	d, err := delivery.NewHTTP(env("LISTEN", ":80"), r)
+	repoPlain, err := repository.NewPlain(env("PLAIN_PATH", "./plain"))
+	if err != nil {
+		return nil, fmt.Errorf("plain: %w", err)
+	}
+
+	d, err := delivery.NewHTTP(
+		env("LISTEN", ":80"),
+		repository.NewMulti(
+			repoDLC,
+			repoPlain,
+		),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("http: %w", err)
 	}
