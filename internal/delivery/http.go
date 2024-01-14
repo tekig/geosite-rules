@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/tekig/geosite-rules/internal/repository"
 	"golang.org/x/sync/errgroup"
 )
@@ -25,6 +26,10 @@ func NewHTTP(listen string, repo repository.Repository) (*HTTP, error) {
 	}
 
 	h.e.GET("/rule/geosite/*", h.handler)
+
+	h.e.Use(
+		middleware.Logger(),
+	)
 
 	return h, nil
 }
